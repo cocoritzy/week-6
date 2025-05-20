@@ -1,14 +1,17 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
+model_name_1B = 'meta-llama/Llama-3.2-1B-Instruct'
+model_name_8B = 'meta-llama/Llama-3.2-3B-Instruct'
 
 # Load model and tokenizer (in half precision)
 model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Meta-Llama-3-8B-Instruct",
+    model_name_1B,
     device_map="auto",
     torch_dtype=torch.float16
 )
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
+tokenizer = AutoTokenizer.from_pretrained(model_name_1B)
+
 
 # fonction to create a chat message
 def format_prompt(message, history=[], system="You are a helpful assistant."):
@@ -33,9 +36,9 @@ while True:
     output = model.generate(
         **inputs,
         max_new_tokens=200,
-        #temperature=0.7,
-        #top_p=0.9,
-        #do_sample=True,
+        temperature=0.7,
+        top_p=0.9,
+        do_sample=True,
         pad_token_id=tokenizer.eos_token_id
     )
 
